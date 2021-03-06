@@ -1,0 +1,97 @@
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<img src="http://192.168.137.200:8081" /> <!--Enter the IP Address of your Raspberry Pi-->
+
+
+
+
+<div style=" height:400px; width:300px; float:right;">
+<center>
+<h1><span style="color:#5C5C5C;">Made in</span><span style="color:#139442"> India</span></h1>
+<h2>Surveillance Robot</h2><br><br>
+<h3>Motion Sensor</h3><br><br>
+
+<div id="mode" style="height:5px; position: absolute; right: 100px; top: 245px; width:100px; float:right;">
+Motion status
+
+
+</div>
+
+<h4>Distance</h4><br><br>
+
+<div id="distmode" style=" height:5px; position: absolute; right: 105px; top: 325px; width:80px; float:right;">
+
+distance
+
+</div>
+
+
+	
+<a href="#" id="up" style="font-size:30px;text-decoration:none;">  &#x1F881;&#x1F881;<br>Forward</a><br><br></center>
+<a href="#" id="left" style="font-size:30px;text-decoration:none;"> &#x1F880;&#x1F880;Left</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="#" id="right" style="font-size:30px; text-decoration:none;"> Right &#x1F882;&#x1F882;</a><br><br>
+<center><a href="#" id="down" style="font-size:30px;text-decoration:none;"> Backward<br> &#x1F883;&#x1F883;</a></center>
+</div>
+
+<script>
+$(document).ready(function(){
+        function listen(){
+		$("#down").on("mousedown", function() {
+     		$.get('/down_side');
+     		}).on('mouseup', function() {
+     		$.get('/stop');
+    		});
+    		$("#up").on("mousedown", function() {
+     		$.get('/up_side');
+     		}).on('mouseup', function() {
+     		$.get('/stop');
+    		});
+    		$("#left").on("mousedown", function() {
+     		$.get('/left_side');
+     		}).on('mouseup', function() {
+     		$.get('/stop');
+    		});
+    		$("#right").on("mousedown", function() {
+     		$.get('/right_side');
+     		}).on('mouseup', function() {
+     		$.get('/stop');
+    		});
+	var x = document.getElementById("mode");
+            $.ajax({
+                type:"GET",
+                url:"/pirlistening",
+                success:function(mstatus,distance){
+			var mstatu=mstatus;
+			b=mstatu["mstatus"];
+			d=mstatu["distance"]
+			console.log(d)
+			console.log(b)			
+			if(b == 1){
+			     x.innerHTML = "MOTION DETECTED";
+			     document.getElementById("distmode").innerHTML=d;				
+			}
+			else{
+			     x.innerHTML = "NO MOTION";
+			     document.getElementById("distmode").innerHTML=d; 			
+			}
+		},
+                error: function(res){
+			x.innerHTML = res;
+			console.log(error);
+                }           
+            });     
+        };   
+        
+        setInterval(listen, 500);
+    });
+
+</script>
+
+</body>
+</html>
